@@ -3,7 +3,7 @@
 **Platform:** AWS EC2 running **Ubuntu Server 24.04 LTS**  
 **App:** React + Vite frontend, Node.js + Express REST API, PostgreSQL database  
 **Production-style processes:** Nginx reverse proxy + systemd; **no Docker or Docker Compose**  
-**Target duration:** 40–65 minutes (AWS installation and npm downloads may take longer)  
+**Target duration:** 40–65 minutes (AWS installation and npm downloads may take longer)
 
 ## 1. Purpose of this lab
 
@@ -57,16 +57,17 @@ systemd keeps the Node.js backend service alive.
 6. Use a VPC with a **public subnet, Internet Gateway route and auto-assigned public IPv4 address**. A suitable default VPC is fine.
 7. Create/choose a **security group** with these inbound rules:
 
-   | Type | Port | Source | Reason |
-   |---|---:|---|---|
-   | SSH | 22 | **My IP** (`your-public-ip/32`) | You connect to the server |
-   | HTTP | 80 | `0.0.0.0/0` | Students can open the demo website |
+   | Type | Port | Source                          | Reason                             |
+   | ---- | ---: | ------------------------------- | ---------------------------------- |
+   | SSH  |   22 | **My IP** (`your-public-ip/32`) | You connect to the server          |
+   | HTTP |   80 | `0.0.0.0/0`                     | Students can open the demo website |
 
    Leave PostgreSQL 5432, backend 5000 and Vite 5173 **closed**. Outbound rules must allow package downloads.
+
 8. Choose **20 GiB gp3 EBS** storage for comfortable lab space (storage costs may apply).
 9. Click **Launch instance**. Wait for its instance state to become **Running**, then copy the **Public IPv4 address** from EC2 instance details.
 
-For the remaining examples, replace `EC2_PUBLIC_IP` with your *real* address. Do not type the angle brackets or placeholder text.
+For the remaining examples, replace `EC2_PUBLIC_IP` with your _real_ address. Do not type the angle brackets or placeholder text.
 
 ## 5. Connect to EC2 over SSH
 
@@ -294,18 +295,18 @@ Ask yourself: If the backend crashes, what restarts it? Why does the backend bin
 
 ## 13. Troubleshooting
 
-| Symptom | How to investigate |
-|---|---|
-| `ssh: connection timed out` | Correct public IP? Running instance? TCP 22 permitted **from your IP**? Public subnet and route? |
-| `Permission denied (publickey)` | Wrong `.pem`, username (`ubuntu`), key permissions or EC2 key pair |
-| `node: command not found` | Run `bash scripts/install-nodejs-ubuntu.sh`; verify Ubuntu 24.04 |
-| `npm install` fails | EC2 needs outbound Internet; inspect npm error; verify disk space with `df -h` |
-| `Could not connect to database` | `sudo systemctl status postgresql`; check DB setup, `backend/.env` and backend logs |
-| `502 Bad Gateway` | `sudo journalctl -u incident-backend -n 100 --no-pager` and `curl http://127.0.0.1:5000/health` |
-| Public website won't open | EC2 security group **HTTP 80**, public IP, route, `sudo systemctl status nginx` |
-| Frontend loads but no incidents | Open browser developer console; test `curl http://127.0.0.1/api/incidents` from EC2 |
-| Nginx configuration error | `sudo nginx -t` and `cat /etc/nginx/sites-available/incident-management` |
-| Node build is killed | Check `free -h`; try a larger EC2 instance with enough RAM |
+| Symptom                         | How to investigate                                                                               |
+| ------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `ssh: connection timed out`     | Correct public IP? Running instance? TCP 22 permitted **from your IP**? Public subnet and route? |
+| `Permission denied (publickey)` | Wrong `.pem`, username (`ubuntu`), key permissions or EC2 key pair                               |
+| `node: command not found`       | Run `bash scripts/install-nodejs-ubuntu.sh`; verify Ubuntu 24.04                                 |
+| `npm install` fails             | EC2 needs outbound Internet; inspect npm error; verify disk space with `df -h`                   |
+| `Could not connect to database` | `sudo systemctl status postgresql`; check DB setup, `backend/.env` and backend logs              |
+| `502 Bad Gateway`               | `sudo journalctl -u incident-backend -n 100 --no-pager` and `curl http://127.0.0.1:5000/health`  |
+| Public website won't open       | EC2 security group **HTTP 80**, public IP, route, `sudo systemctl status nginx`                  |
+| Frontend loads but no incidents | Open browser developer console; test `curl http://127.0.0.1/api/incidents` from EC2              |
+| Nginx configuration error       | `sudo nginx -t` and `cat /etc/nginx/sites-available/incident-management`                         |
+| Node build is killed            | Check `free -h`; try a larger EC2 instance with enough RAM                                       |
 
 ## 14. Student assignment — what to submit
 
